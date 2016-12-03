@@ -3,4 +3,3 @@ click
 beaker
 jinja2
 colorific
-beaker
