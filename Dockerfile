@@ -12,6 +12,7 @@ RUN git clone https://github.com/MatanSilver/colorpalette.git .
 RUN apk add --no-cache build-base python-dev jpeg-dev zlib-dev
 ENV LIBRARY_PATH=/lib:/usr/lib
 RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 EXPOSE 8080
