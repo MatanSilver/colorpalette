@@ -1,8 +1,22 @@
-version: '2.0'
+version: "3.3"
 services:
   web:
     build: .
+    container_name: colorpalette
     ports:
-     - "8080:8080"
-    volumes:
-     - .:/code
+     - "9004:8080"
+    networks:
+      - discovery
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.colorpalette.rule=Host(`colorpalette.matansilver.com`)"
+      - "traefik.http.routers.colorpalette.entrypoints=web-secure"
+      - "traefik.docker.network=discovery"
+      - "traefik.http.routers.colorpalette.tls.certresolver=le"
+      - "traefik.http.services.colorpalette.loadbalancer.server.port=8080"
+    restart: unless-stopped
+
+networks:
+  discovery:
+    external: true
+
