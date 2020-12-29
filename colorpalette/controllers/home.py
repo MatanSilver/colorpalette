@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from bottle import Bottle, jinja2_view, route, request, redirect
-import colorific, os
+import colorgram
+import os
 
 home_app = Bottle()
 
@@ -16,7 +17,8 @@ def upload_image():
     data = request.files.get('data')
     if data is not None:
         s = request.environ.get('beaker.session')
-        colors = [colorific.rgb_to_hex(color.value) for color in colorific.extract_colors(data.file).colors]
+        colors = [color.rgb for color in colorgram.extract(data.file, 5)]
+        colors = ['#' + hex((r<<16)+(g<<8)+b)[2:] for (r, g, b) in colors]
         s['colors'] = colors
         s.save()
     return redirect('/result')

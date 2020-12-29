@@ -1,19 +1,28 @@
 FROM alpine:3.3
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-
 # Install app dependencies
 
-RUN apk add --no-cache python
-RUN apk add --no-cache py-pip
-RUN apk add --no-cache git
-RUN git clone https://github.com/MatanSilver/colorpalette.git .
-RUN apk add --no-cache build-base python-dev jpeg-dev zlib-dev
 ENV LIBRARY_PATH=/lib:/usr/lib
-RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN apk update
+RUN apk add --no-cache python3
+RUN apk add --no-cache python3-dev
+RUN apk add --no-cache zlib-dev
+RUN apk add --no-cache jpeg-dev
+RUN apk add --no-cache build-base
+RUN apk add --no-cache git
+
+
+RUN python3 -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip3 install --no-cache --upgrade pip setuptools wheel
+
+# RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
+
+RUN mkdir -p /usr/src/app; exit 0
+WORKDIR /usr/src/app
+COPY . .
+
+RUN pip3 install -r requirements.txt
 
 EXPOSE 8080
-CMD [ "python", "manage.py", "runserver" ]
+CMD [ "python3", "manage.py", "runserver" ]

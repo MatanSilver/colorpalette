@@ -1,20 +1,21 @@
-version: '2.0'
+version: "3.3"
 services:
   web:
     build: .
-    #ports:
-    # - "8080:8080"
-    expose:
-      - "8080"
-    #depends_on:
-    # - nginx
-    volumes:
-      - .:/code
-  lb:
-    image: 'dockercloud/haproxy:latest'
-    links:
-      - web
+    container_name: colorpalette
     ports:
-     - '8080:80'
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+     - "9004:8080"
+    networks:
+      - discovery
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.colorpalette.rule=Host(`colorpalette.matansilver.com`)"
+      - "traefik.http.routers.colorpalette.entrypoints=web-secure"
+      - "traefik.docker.network=discovery"
+      - "traefik.http.routers.colorpalette.tls.certresolver=le"
+      - "traefik.http.services.colorpalette.loadbalancer.server.port=8080"
+    restart: unless-stopped
+
+networks:
+  discovery:
+    external: true
